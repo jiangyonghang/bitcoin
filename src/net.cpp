@@ -2745,6 +2745,7 @@ void CConnman::PushMessage(CNode* pnode, CSerializedNetMsg&& msg)
 
     CVectorWriter{SER_NETWORK, INIT_PROTO_VERSION, serializedHeader, 0, hdr};
 
+    //printf("send %s\n",hdr.GetCommand().c_str());
     size_t nBytesSent = 0;
     {
         LOCK(pnode->cs_vSend);
