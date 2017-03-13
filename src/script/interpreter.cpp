@@ -1256,6 +1256,17 @@ bool TransactionSignatureChecker::CheckSig(const vector<unsigned char>& vchSigIn
     if (!pubkey.IsValid())
         return false;
 
+    printf("sig ");
+    for(int i=0;i<vchSigIn.size();++i)
+        printf("%02x",vchSigIn[i]);
+    printf("\n");
+
+    printf("vchPubKey ");
+    for(int i=0;i<vchPubKey.size();++i)
+        printf("%02x",vchPubKey[i]);
+    printf("\n");
+
+
     // Hash type is one byte tacked on to the end of the signature
     vector<unsigned char> vchSig(vchSigIn);
     if (vchSig.empty())
@@ -1264,6 +1275,8 @@ bool TransactionSignatureChecker::CheckSig(const vector<unsigned char>& vchSigIn
     vchSig.pop_back();
 
     uint256 sighash = SignatureHash(scriptCode, *txTo, nIn, nHashType, amount, sigversion, this->txdata);
+
+    printf("sighash %s\n",sighash.ToString().c_str());
 
     if (!VerifySignature(vchSig, pubkey, sighash))
         return false;
@@ -1469,6 +1482,10 @@ bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, const C
         assert(!stack.empty());
 
         const valtype& pubKeySerialized = stack.back();
+        printf("pubkey ");
+        for(int i=0;i<stack.back().size();++i)
+            printf("%02x",stack.back()[i]);
+        printf("\n");
         CScript pubKey2(pubKeySerialized.begin(), pubKeySerialized.end());
         popstack(stack);
 
