@@ -2692,6 +2692,7 @@ bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend, CWalletTx& wt
 
         if (sign)
         {
+            //jyh book
             CTransaction txNewConst(txNew);
             int nIn = 0;
             for (const auto& coin : setCoins)
