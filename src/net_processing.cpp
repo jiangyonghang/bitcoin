@@ -1190,6 +1190,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         }
     }
 
+    printf("%s\n",strCommand.c_str());
     if (strCommand == NetMsgType::REJECT)
     {
         if (fDebug) {
