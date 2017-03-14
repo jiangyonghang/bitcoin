@@ -31,9 +31,14 @@ bool TransactionSignatureCreator::CreateSig(std::vector<unsigned char>& vchSig, 
         return false;
 
     uint256 hash = SignatureHash(scriptCode, *txTo, nIn, nHashType, amount, sigversion);
+    printf("hash %s\n",hash.ToString().c_str());
     if (!key.Sign(hash, vchSig))
         return false;
     vchSig.push_back((unsigned char)nHashType);
+    printf("signature ");
+    for(int i=0;i<vchSig.size();++i)
+        printf("%02x",vchSig[i]);
+    printf("\n");
     return true;
 }
 
@@ -150,6 +155,8 @@ bool ProduceSignature(const BaseSignatureCreator& creator, const CScript& fromPu
     bool P2SH = false;
     CScript subscript;
     sigdata.scriptWitness.stack.clear();
+
+
 
     if (solved && whichType == TX_SCRIPTHASH)
     {

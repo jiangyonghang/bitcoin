@@ -1218,7 +1218,6 @@ uint256 SignatureHash(const CScript& scriptCode, const CTransaction& txTo, unsig
         ss << txTo.nLockTime;
         // Sighash type
         ss << nHashType;
-
         return ss.GetHash();
     }
 
@@ -1241,7 +1240,9 @@ uint256 SignatureHash(const CScript& scriptCode, const CTransaction& txTo, unsig
 
     // Serialize and hash
     CHashWriter ss(SER_GETHASH, 0);
+    printf("\nsignature hash[ ");
     ss << txTmp << nHashType;
+    printf(" ]signature hash \n");
     return ss.GetHash();
 }
 
@@ -1256,15 +1257,15 @@ bool TransactionSignatureChecker::CheckSig(const vector<unsigned char>& vchSigIn
     if (!pubkey.IsValid())
         return false;
 
-    printf("sig ");
-    for(int i=0;i<vchSigIn.size();++i)
-        printf("%02x",vchSigIn[i]);
-    printf("\n");
+    //printf("sig ");
+    //for(int i=0;i<vchSigIn.size();++i)
+    //    printf("%02x",vchSigIn[i]);
+    //printf("\n");
 
-    printf("vchPubKey ");
-    for(int i=0;i<vchPubKey.size();++i)
-        printf("%02x",vchPubKey[i]);
-    printf("\n");
+    //printf("vchPubKey ");
+    //for(int i=0;i<vchPubKey.size();++i)
+    //    printf("%02x",vchPubKey[i]);
+    //printf("\n");
 
 
     // Hash type is one byte tacked on to the end of the signature
@@ -1276,7 +1277,7 @@ bool TransactionSignatureChecker::CheckSig(const vector<unsigned char>& vchSigIn
 
     uint256 sighash = SignatureHash(scriptCode, *txTo, nIn, nHashType, amount, sigversion, this->txdata);
 
-    printf("sighash %s\n",sighash.ToString().c_str());
+    //printf("sighash %s\n",sighash.ToString().c_str());
 
     if (!VerifySignature(vchSig, pubkey, sighash))
         return false;

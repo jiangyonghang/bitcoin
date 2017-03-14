@@ -40,6 +40,16 @@ std::string CTxIn::ToString() const
     if (nSequence != SEQUENCE_FINAL)
         str += strprintf(", nSequence=%u", nSequence);
     str += ")";
+
+    CScript::const_iterator it=scriptSig.begin();
+    printf("======");
+    while(it!=scriptSig.end())
+    {
+        printf("%02x",*it);
+        ++it;
+    }
+    printf("\n");
+
     return str;
 }
 
