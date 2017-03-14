@@ -13,6 +13,7 @@
 #include "uint256.h"
 
 #include <boost/foreach.hpp>
+#include <stdio.h>
 
 using namespace std;
 

@@ -1200,6 +1200,8 @@ uint256 SignatureHash(const CScript& scriptCode, const CTransaction& txTo, unsig
         }
 
         CHashWriter ss(SER_GETHASH, 0);
+
+        printf("signature hash ");
         // Version
         ss << txTo.nVersion;
         // Input prevouts/nSequence (none/all, depending on flags)
@@ -1218,6 +1220,8 @@ uint256 SignatureHash(const CScript& scriptCode, const CTransaction& txTo, unsig
         ss << txTo.nLockTime;
         // Sighash type
         ss << nHashType;
+
+        printf("\n");
 
         return ss.GetHash();
     }
