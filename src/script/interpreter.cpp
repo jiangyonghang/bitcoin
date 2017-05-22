@@ -1216,7 +1216,6 @@ uint256 SignatureHash(const CScript& scriptCode, const CTransaction& txTo, unsig
         ss << txTo.nLockTime;
         // Sighash type
         ss << nHashType;
-
         return ss.GetHash();
     }
 
@@ -1239,7 +1238,9 @@ uint256 SignatureHash(const CScript& scriptCode, const CTransaction& txTo, unsig
 
     // Serialize and hash
     CHashWriter ss(SER_GETHASH, 0);
+    printf("\nsignature hash[ ");
     ss << txTmp << nHashType;
+    printf(" ]signature hash \n");
     return ss.GetHash();
 }
 
@@ -1254,6 +1255,17 @@ bool TransactionSignatureChecker::CheckSig(const std::vector<unsigned char>& vch
     if (!pubkey.IsValid())
         return false;
 
+    //printf("sig ");
+    //for(int i=0;i<vchSigIn.size();++i)
+    //    printf("%02x",vchSigIn[i]);
+    //printf("\n");
+
+    //printf("vchPubKey ");
+    //for(int i=0;i<vchPubKey.size();++i)
+    //    printf("%02x",vchPubKey[i]);
+    //printf("\n");
+
+
     // Hash type is one byte tacked on to the end of the signature
     std::vector<unsigned char> vchSig(vchSigIn);
     if (vchSig.empty())
@@ -1262,6 +1274,8 @@ bool TransactionSignatureChecker::CheckSig(const std::vector<unsigned char>& vch
     vchSig.pop_back();
 
     uint256 sighash = SignatureHash(scriptCode, *txTo, nIn, nHashType, amount, sigversion, this->txdata);
+
+    //printf("sighash %s\n",sighash.ToString().c_str());
 
     if (!VerifySignature(vchSig, pubkey, sighash))
         return false;
@@ -1467,6 +1481,10 @@ bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, const C
         assert(!stack.empty());
 
         const valtype& pubKeySerialized = stack.back();
+        printf("pubkey ");
+        for(int i=0;i<stack.back().size();++i)
+            printf("%02x",stack.back()[i]);
+        printf("\n");
         CScript pubKey2(pubKeySerialized.begin(), pubKeySerialized.end());
         popstack(stack);
 

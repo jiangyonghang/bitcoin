@@ -32,6 +32,7 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/thread.hpp>
+#include <stdio.h>
 
 CWallet* pwalletMain = NULL;
 /** Transaction fee set by the user */
@@ -2317,7 +2318,7 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CWalletT
         if (recipient.fSubtractFeeFromAmount)
             nSubtractFeeFromAmount++;
     }
-    if (vecSend.empty())
+    if (vecSend.empty())//false
     {
         strFailReason = _("Transaction must have at least one recipient");
         return false;
@@ -2384,7 +2385,7 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CWalletT
                 {
                     CTxOut txout(recipient.nAmount, recipient.scriptPubKey);
 
-                    if (recipient.fSubtractFeeFromAmount)
+                    if (recipient.fSubtractFeeFromAmount) //false
                     {
                         txout.nValue -= nFeeRet / nSubtractFeeFromAmount; // Subtract fee equally from each selected recipient
 
@@ -2395,7 +2396,7 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CWalletT
                         }
                     }
 
-                    if (txout.IsDust(dustRelayFee))
+                    if (txout.IsDust(dustRelayFee))//false
                     {
                         if (recipient.fSubtractFeeFromAmount && nFeeRet > 0)
                         {
@@ -2421,7 +2422,7 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CWalletT
                 }
 
                 const CAmount nChange = nValueIn - nValueToSelect;
-                if (nChange > 0)
+                if (nChange > 0)//true
                 {
                     // Fill a vout to ourself
                     // TODO: pass in scriptChange instead of reservekey so
@@ -2429,7 +2430,7 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CWalletT
                     CScript scriptChange;
 
                     // coin control: send change to custom address
-                    if (coinControl && !boost::get<CNoDestination>(&coinControl->destChange))
+                    if (coinControl && !boost::get<CNoDestination>(&coinControl->destChange))//false
                         scriptChange = GetScriptForDestination(coinControl->destChange);
 
                     // no coin control: send change to newly generated address
@@ -2522,6 +2523,7 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CWalletT
                     txNew.vin.push_back(CTxIn(coin.first->GetHash(),coin.second,CScript(),
                                               std::numeric_limits<unsigned int>::max() - (rbf ? 2 : 1)));
 
+                printf("%s\n",txNew.vin[0].ToString().c_str());
                 // Fill in dummy signatures for fee calculation.
                 if (!DummySignTx(txNew, setCoins)) {
                     strFailReason = _("Signing transaction failed");
@@ -2598,12 +2600,14 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CWalletT
 
         if (sign)
         {
+            //jyh book
             CTransaction txNewConst(txNew);
             int nIn = 0;
             for (const auto& coin : setCoins)
             {
                 const CScript& scriptPubKey = coin.first->tx->vout[coin.second].scriptPubKey;
                 SignatureData sigdata;
+
 
                 if (!ProduceSignature(TransactionSignatureCreator(this, &txNewConst, nIn, coin.first->tx->vout[coin.second].nValue, SIGHASH_ALL), scriptPubKey, sigdata))
                 {
@@ -2615,6 +2619,10 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CWalletT
 
                 nIn++;
             }
+            //printf("******\n");
+            //printf("%s\n",txNew.vin[0].ToString().c_str());
+            //printf("******\n");
+            
         }
 
         // Embed the constructed transaction data in wtxNew.
@@ -2643,6 +2651,7 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CWalletT
             return false;
         }
     }
+
     return true;
 }
 
