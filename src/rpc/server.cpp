@@ -458,6 +458,7 @@ static inline JSONRPCRequest transformNamedArguments(const JSONRPCRequest& in, c
 
 UniValue CRPCTable::execute(const JSONRPCRequest &request) const
 {
+    printf("%s\n",request.strMethod.c_str());
     // Return immediately if in warmup
     {
         LOCK(cs_rpcWarmup);
@@ -483,6 +484,7 @@ UniValue CRPCTable::execute(const JSONRPCRequest &request) const
     }
     catch (const std::exception& e)
     {
+        printf("%s\n",e.what());
         throw JSONRPCError(RPC_MISC_ERROR, e.what());
     }
 }

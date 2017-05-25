@@ -141,8 +141,6 @@ CSHA256::CSHA256() : bytes(0)
 
 CSHA256& CSHA256::Write(const unsigned char* data, size_t len)
 {
-    for(int i=0;i<len;++i)
-        printf("%02x",data[i]);
     const unsigned char* end = data + len;
     size_t bufsize = bytes % 64;
     if (bufsize && bufsize + len >= 64) {
